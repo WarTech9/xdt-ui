@@ -7,6 +7,20 @@ import { Component } from '@angular/core';
 })
 export class Tab1Page {
 
+  currentSegment = 'mint';
+  assetSymbol = 'XDT';
+  isApproved = false;
   constructor() {}
 
+  onSegmentChanged(event) {
+    this.currentSegment = event.target.value;
+  }
+
+  approve() {}
+
+  connect() {}
+
+  mint() {}
+
+  redeem() {}
 }
