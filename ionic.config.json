@@ -1,0 +1,7 @@
+{
+  "name": "xd-token-ui",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
