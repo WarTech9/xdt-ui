@@ -1,6 +1,5 @@
 <ion-tabs>
-
-  <ion-tab-bar slot="top">
+  <ion-tab-bar slot="top" color="light">
     <ion-tab-button tab="swap">
       <ion-icon name="swap-horizontal"></ion-icon>
       <ion-label>Swap</ion-label>
@@ -13,3 +12,11 @@
   </ion-tab-bar>
 
 </ion-tabs>
+<ion-toolbar *ngIf="!isCorrectNetwork" color="danger" class="centered-text text-middle">
+  <ion-text class="text-middle white-text">
+    <ion-icon name="warning"></ion-icon>
+    Please switch to the Optimistic Kovan
+  </ion-text>
+  <ion-button size="small" color="warning" class="switch-button" (click)="switchNetwork()">Switch Network</ion-button>
+</ion-toolbar>
+

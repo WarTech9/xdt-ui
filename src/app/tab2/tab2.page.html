@@ -20,15 +20,15 @@
             <ion-card-content>
               <ion-row>
                 <ion-col>Total Supply</ion-col>
-                <ion-col>{{totalSupply}} XDT</ion-col>
+                <ion-col>{{totalSupply | number:'1.2-4'}} XDT</ion-col>
               </ion-row>
               <ion-row>
                 <ion-col>Position Value</ion-col>
-                <ion-col>{{positionValue}}</ion-col>
+                <ion-col>{{positionValue | number:'1.2-4'}}</ion-col>
               </ion-row>
               <ion-row>
                 <ion-col>Open Notional</ion-col>
-                <ion-col> {{openNotional}} </ion-col>
+                <ion-col> {{openNotional | number:'1.2-4'}} </ion-col>
               </ion-row>
             </ion-card-content>
           </ion-card>

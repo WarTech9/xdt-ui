@@ -1,5 +1,6 @@
 export const environment = {
     production: true,
+    chainId: '0x45',
     jsonRpcUrl: 'https://kovan.optimism.io',
     usdc: '0x3e22e37Cb472c872B5dE121134cFD1B57Ef06560',
     xdt: '0xC3443c2ebb6220b955aca391622140165541C3D3',
@@ -10,14 +11,14 @@ export const environment = {
     interactor: '0x354f5a03eD10fFdef939A651d9129E22215B0353',
     faucet: 'https://kovan.optifaucet.com',
     networkParams: {
-      chainId: '',
-      chainName: '',
+      chainId: '0x45',
+      chainName: 'Optimistic Kovan',
       nativeCurrency: {
-          name: '',
-          symbol: '',
+          name: 'Kovan ETH',
+          symbol: 'KOR',
           decimals: 18
       },
-      rpcUrls: [],
-      blockExplorerUrls: []
+      rpcUrls: ['https://kovan.optimism.io'],
+      blockExplorerUrls: ['https://kovan-optimistic.etherscan.io/']
     },
   };

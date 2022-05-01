@@ -5,6 +5,7 @@ import { Config } from 'protractor';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NetworkParams } from './config';
+import { GlobalAlertService } from './global-alert.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,9 @@ export class WalletProviderService {
   accountSubject: BehaviorSubject<any> = new BehaviorSubject(null);
   networkSubject: BehaviorSubject<any> = new BehaviorSubject(null);
 
-  constructor() {
+  constructor(
+    private globalAlert: GlobalAlertService
+  ) {
     this.initializeNetworkConnection();
   }
 
@@ -63,14 +66,16 @@ export class WalletProviderService {
   }
 
   async addNetwork() {
-    if (!this.provider || !this.currentNetwork) {
+    if (!this.provider) {
+      console.log('no provider');
+      this.globalAlert.presentNoConnectionAlert();
       return;
     }
     console.log('about to add: ', this.currentNetwork);
     this.provider
     .send(
       'wallet_addEthereumChain',
-      [this.currentNetwork]
+      [environment.networkParams]
     )
     .catch((error: any) => {
       console.log(error);
@@ -169,6 +174,7 @@ export class WalletProviderService {
   private handledChainChanged(network) {
     console.log('>>> Chain changed to: ', network);
     this.networkSubject.next(this.getHexString(network.chainId));
+    // this.networkSubject.next(network);
   }
 
   private handleAccountChanged(accounts) {

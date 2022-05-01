@@ -9,7 +9,7 @@
           <ion-card>
             <ion-card-content>
               <ion-row>
-                <ion-segment color="secondary" value="mint" (ionChange)="onSegmentChanged($event)">
+                <ion-segment color="danger" value="mint" (ionChange)="onSegmentChanged($event)">
                   <ion-segment-button value="mint">MINT</ion-segment-button>
                   <ion-segment-button value="redeem">REDEEM</ion-segment-button>
                 </ion-segment>
@@ -39,11 +39,11 @@
                     <ion-input placeholder="0.0" class="bordered-input" #xdtOutput></ion-input>
                   </ion-col>
                 </ion-row>
-                <ion-row>
+                <ion-row class="button-row">
                   <ion-col>
-                    <ion-button *ngIf="!account" color="primary" expand="block" fill="outline" (click)="connect()">Connect</ion-button>
-                    <ion-button *ngIf="account && !isUsdcApproved" color="primary" fill="outline" expand="block" (click)="approveUsdc()">Approve USDC</ion-button>
-                    <ion-button *ngIf="account && isUsdcApproved" color="primary" fill="solid" expand="block" (click)="mint()">Mint</ion-button>
+                    <ion-button *ngIf="!account" color="success" expand="block" fill="outline" (click)="connect()">Connect</ion-button>
+                    <ion-button *ngIf="account && !isUsdcApproved" color="success" fill="outline" expand="block" (click)="approveUsdc()">Approve USDC</ion-button>
+                    <ion-button *ngIf="account && isUsdcApproved" color="success" fill="solid" expand="block" (click)="mint()">Mint</ion-button>
                   </ion-col>
                 </ion-row>
               </div>
@@ -73,16 +73,23 @@
                     <ion-input placeholder="0.0" class="bordered-input" #usdcOutput></ion-input>
                   </ion-col>
                 </ion-row>
-                <ion-row>
+                <ion-row class="button-row">
                   <ion-col>
-                    <ion-button *ngIf="!account" color="primary" expand="block" fill="outline" (click)="connect()">Connect</ion-button>
-                    <ion-button *ngIf="account && !isXdtApproved" color="primary" fill="outline" expand="block" (click)="approveXdt()">Approve XDT</ion-button>
-                    <ion-button *ngIf="account && isXdtApproved" color="primary" fill="solid" expand="block" (click)="redeem()">Redeem</ion-button>
+                    <ion-button *ngIf="!account" color="success" expand="block" fill="outline" (click)="connect()">Connect</ion-button>
+                    <ion-button *ngIf="account && !isXdtApproved" color="success" fill="outline" expand="block" (click)="approveXdt()">Approve XDT</ion-button>
+                    <ion-button *ngIf="account && isXdtApproved" color="success" fill="solid" expand="block" (click)="redeem()">Redeem</ion-button>
                   </ion-col>
                 </ion-row>
               </div>
             </ion-card-content>
           </ion-card>
+          <ion-row>
+            <ion-col size="4" offset="4">
+              <ion-text class="centered-text">
+                <a href="https://kovan.optifaucet.com/" target="_blank" color="light">Get testnet USDC</a>
+              </ion-text>
+            </ion-col>
+          </ion-row>
         </ion-col>
       </ion-row>
     </ion-grid>

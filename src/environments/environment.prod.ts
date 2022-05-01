@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  chainId: '0x45',
   jsonRpcUrl: 'https://kovan.optimism.io',
   usdc: '0x3e22e37Cb472c872B5dE121134cFD1B57Ef06560',
   xdt: '0xb3c6C6539d0a4E0DbBB53e8c89d03E4FB43c22b5',

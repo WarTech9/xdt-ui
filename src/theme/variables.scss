@@ -2,8 +2,12 @@
 // http://ionicframework.com/docs/theming/
 
 /** Ionic CSS Variables **/
+* {
+  font-family: 'Inconsolata', monospace;
+}
+
 :root {
-  // font-family: 'Inconsolata', monospace;
+  font-family: 'Inconsolata', monospace;
 
   /** primary **/
   --ion-color-primary: #3880ff;
