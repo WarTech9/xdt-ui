@@ -3,8 +3,29 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: true,
+  jsonRpcUrl: '',
+  usdc: '',
+  xdt: '',
+  ethMarket: '',
+  controller: '',
+  txUrlPrefix: '',
+  faucet: '',
+  accountProxy: '',
+  interactor: '',
+  networkParams: {
+    chainId: '',
+    chainName: '',
+    nativeCurrency: {
+        name: '',
+        symbol: '',
+        decimals: 18
+    },
+    rpcUrls: [],
+    blockExplorerUrls: []
+  },
 };
+
 
 /*
  * For easier debugging in development mode, you can import the following file

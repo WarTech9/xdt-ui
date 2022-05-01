@@ -27,10 +27,18 @@
 
 @media (prefers-color-scheme: dark){}
 
+.container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .bordered-input {
     border-radius: 5px;
     border: 1px var(--ion-color-medium-tint) solid;
     padding-left: 6px;
     padding-right: 6px;
-  }
+}
   
