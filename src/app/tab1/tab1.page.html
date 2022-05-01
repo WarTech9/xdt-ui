@@ -6,7 +6,7 @@
     <ion-grid>
       <ion-row>
         <ion-col size="4" offset="4">
-          <ion-card>
+          <ion-card class="card">
             <ion-card-content>
               <ion-row>
                 <ion-segment color="danger" value="mint" (ionChange)="onSegmentChanged($event)">
@@ -32,6 +32,7 @@
                 <ion-row>
                   <ion-col class="align-items-center">
                     <ion-text>TO XDT</ion-text>
+                    <ion-icon class="add-btn" name="add" (click)="addXDT()"></ion-icon>
                   </ion-col>
                 </ion-row>
                 <ion-row>
@@ -83,13 +84,14 @@
               </div>
             </ion-card-content>
           </ion-card>
-          <ion-row>
-            <ion-col size="4" offset="4">
-              <ion-text class="centered-text">
-                <a href="https://kovan.optifaucet.com/" target="_blank" color="light">Get testnet USDC</a>
-              </ion-text>
-            </ion-col>
-          </ion-row>
+          
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="4" offset="4" class="centered-text">
+          <ion-text class="centered-text">
+            <a href="https://kovan.optifaucet.com/" target="_blank" color="light" class="get-link">Get testnet USDC</a>
+          </ion-text>
         </ion-col>
       </ion-row>
     </ion-grid>

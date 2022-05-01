@@ -97,6 +97,13 @@ export class Tab1Page implements OnInit, OnDestroy {
     }
   }
 
+  addUsdc() {
+
+  }
+
+  addXDT() {
+  }
+
   async redeem() {
     try {
       const amount = this.xdtInput.value.toString() || '';
