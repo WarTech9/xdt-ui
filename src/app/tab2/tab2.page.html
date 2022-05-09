@@ -16,7 +16,6 @@
                 </ion-col>
               </ion-row>
             </ion-card-title>
-            <ion-divider></ion-divider>
             <ion-card-content class="stats">
               <ion-row>
                 <ion-col>Total Supply</ion-col>
@@ -29,6 +28,29 @@
               <ion-row>
                 <ion-col>Open Notional</ion-col>
                 <ion-col> {{openNotional | number:'1.2-4'}} </ion-col>
+              </ion-row>
+              <ion-item-divider class="light-background"></ion-item-divider>
+              <ion-row>
+                <ion-col size="4"></ion-col>
+                <ion-col size="4">Minted</ion-col>
+                <ion-col size="4">Redeemable</ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="4">USDC</ion-col>
+                <ion-col size="4">{{mintedPerUsdc | number:'1.4'}}</ion-col>
+                <ion-col size="4">{{redeemableUsdc | number:'1.4'}}</ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="4">WETH</ion-col>
+                <ion-col size="4">{{mintedPerWeth | number:'1.4'}}</ion-col>
+                <ion-col size="4">{{redeemableWeth | number:'1.4'}}</ion-col>
+              </ion-row>
+
+
+              <ion-row *ngFor="let info of collateralInfo">
+                <ion-col>{{ info.symbol }} Redeemable</ion-col>
+                <ion-col>{{ info.minted | formatBN:'18' }}</ion-col>
+                <ion-col>{{ info.redeemable | formatBN:'6' }}</ion-col>
               </ion-row>
             </ion-card-content>
           </ion-card>

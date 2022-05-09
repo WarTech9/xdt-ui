@@ -19,9 +19,15 @@
                   <ion-col>
                   </ion-col>
                 </ion-row>
-                <ion-row>
-                  <ion-col class="">
-                    <ion-text>FROM USDC</ion-text>
+                <ion-row class="vertical-center">
+                  <ion-col>
+                    <ion-text *ngIf="selectedCollateral">FROM {{selectedCollateral.symbol}}</ion-text>
+                    <ion-icon class="add-btn" name="add" (click)="addCollateral()"></ion-icon>
+                  </ion-col>
+                  <ion-col>
+                    <ion-select *ngIf="selectedCollateral" interface="popover" [value]="selectedCollateral.symbol" (ionChange)="onCollateralSelected($event)">
+                      <ion-select-option *ngFor="let collateral of env.collateral" [value]="collateral.symbol">{{collateral.symbol}}</ion-select-option>
+                    </ion-select>
                   </ion-col>
                 </ion-row>
                 <ion-row>
@@ -43,8 +49,8 @@
                 <ion-row class="button-row">
                   <ion-col>
                     <ion-button *ngIf="!account" color="success" expand="block" fill="outline" (click)="connect()">Connect</ion-button>
-                    <ion-button *ngIf="account && !isUsdcApproved" color="success" fill="outline" expand="block" (click)="approveUsdc()">Approve USDC</ion-button>
-                    <ion-button *ngIf="account && isUsdcApproved" color="success" fill="solid" expand="block" (click)="mint()">Mint</ion-button>
+                    <ion-button *ngIf="account && !isCollateralApproved" color="success" fill="outline" expand="block" (click)="approve()">Approve {{selectedCollateral.symbol}}</ion-button>
+                    <ion-button *ngIf="account && isCollateralApproved" color="success" fill="solid" expand="block" (click)="mint()">Mint</ion-button>
                   </ion-col>
                 </ion-row>
               </div>
@@ -57,6 +63,7 @@
                 <ion-row>
                   <ion-col class="">
                     <ion-text>FROM XDT</ion-text>
+                    <ion-icon class="add-btn" name="add" (click)="addXDT()"></ion-icon>
                   </ion-col>
                 </ion-row>
                 <ion-row>
@@ -64,9 +71,15 @@
                     <ion-input placeholder="0.0" class="bordered-input" #xdtInput></ion-input>
                   </ion-col>
                 </ion-row>
-                <ion-row>
-                  <ion-col class="align-items-center">
-                    <ion-text>TO USDC</ion-text>
+                <ion-row class="vertical-center">
+                  <ion-col>
+                    <ion-text *ngIf="selectedCollateral">TO {{selectedCollateral.symbol}}</ion-text>
+                    <ion-icon class="add-btn" name="add" (click)="addCollateral()"></ion-icon>
+                  </ion-col>
+                  <ion-col>
+                    <ion-select *ngIf="selectedCollateral" interface="popover"  [value]="selectedCollateral.symbol" (ionChange)="onCollateralSelected($event)">
+                      <ion-select-option *ngFor="let collateral of env.collateral" [value]="collateral.symbol">{{collateral.symbol}}</ion-select-option>
+                    </ion-select>
                   </ion-col>
                 </ion-row>
                 <ion-row>

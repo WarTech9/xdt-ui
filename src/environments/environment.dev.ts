@@ -3,12 +3,13 @@ export const environment = {
     chainId: '0x45',
     jsonRpcUrl: 'https://kovan.optimism.io',
     usdc: '0x3e22e37Cb472c872B5dE121134cFD1B57Ef06560',
-    xdt: '0xE47F5066Cb4C63ecfbd0991d0095755f64da41d7',
+    weth: '0x4200000000000000000000000000000000000006',
+    xdt: '0x79302CDFeda4D42136A51c8E357d375883497D77',
     ethMarket: '0x5802918dC503c465F969DA0847b71E3Fbe9B141c',
-    controller: '0x0A8052B6c1D0b4ceb6E4652709b792D79aD0F7CD',
+    controller: '0xB223b6B095ea781759B05180552e8632a3ad6640',
     txUrlPrefix: 'https://kovan-optimistic.etherscan.io/tx',
-    accountProxy: '0x7f6640D07f4ed2eB847Ba5e0230048400e41477f',
-    interactor: '0x7899Ba4c8E02451FE1233f218AddFeeBa0222020',
+    accountProxy: '0xC6fCAe482643876F2EcF593Bd8368c625036bd12',
+    interactor: '0x169ca11d588fFfE581Ca34b8Dc292D733e1F2dcb',
     faucet: 'https://kovan.optifaucet.com',
     networkParams: {
       chainId: '0x45',
@@ -21,4 +22,18 @@ export const environment = {
       rpcUrls: ['https://kovan.optimism.io'],
       blockExplorerUrls: ['https://kovan-optimistic.etherscan.io/']
     },
+    collateral: [
+      {
+        name: 'Wrapped ETH',
+        symbol: 'WETH',
+        decimals: 18,
+        address: '0x4200000000000000000000000000000000000006'
+      },
+      {
+        name: 'USD Coin',
+        symbol: 'USDC',
+        decimals: 6,
+        address: '0x3e22e37Cb472c872B5dE121134cFD1B57Ef06560',
+      }
+    ]
   };

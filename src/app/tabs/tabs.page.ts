@@ -1,6 +1,7 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { GlobalAlertService } from '../services/global-alert.service';
 import { WalletProviderService } from '../services/wallet-provider.service';
 
 @Component({
@@ -15,6 +16,7 @@ export class TabsPage implements OnInit, OnDestroy {
   accountSubscription?: Subscription;
   constructor(
     private wallet: WalletProviderService,
+    private alertService: GlobalAlertService,
     private zone: NgZone,
     ) {}
 
@@ -30,9 +32,22 @@ export class TabsPage implements OnInit, OnDestroy {
     await this.wallet.addNetwork();
   }
 
+  async connect() {
+    try {
+      const isConected = await this.wallet.connect();
+      if (isConected) {
+        this.wallet.getAccounts();
+      } else {
+        this.alertService.presentNoConnectionAlert();
+      }
+    } catch (error) {
+      this.alertService.showErrorAlert(error);
+      console.error('error connecting', error);
+    }
+  }
+
   setupListeners() {
     this.networkSubscription = this.wallet.networkSubject.subscribe(async chainId => {
-      console.log('got chainId = ', chainId);
       await this.wallet.getAccounts();
       if (chainId) {
         this.zone.run(() => {

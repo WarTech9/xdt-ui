@@ -19,6 +19,7 @@ export const environment = {
         decimals: 18
     },
     rpcUrls: [],
-    blockExplorerUrls: []
+    blockExplorerUrls: [],
   },
+  collaterlal: [],
 };

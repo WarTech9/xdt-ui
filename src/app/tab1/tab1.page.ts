@@ -6,6 +6,7 @@ import { BigNumber, ethers } from 'ethers';
 import { IonInput } from '@ionic/angular';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GlobalAlertService } from '../services/global-alert.service';
+import { CollateralToken, Config } from '../services/config';
 
 @Component({
   selector: 'app-tab1',
@@ -21,7 +22,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   currentSegment = 'mint';
   assetSymbol = 'XDT';
   isApproved = false;
-  isUsdcApproved = false;
+  isCollateralApproved = false;
   isXdtApproved = false;
   isConnected = false;
   account: any;
@@ -30,10 +31,13 @@ export class Tab1Page implements OnInit, OnDestroy {
   usdcApprovalSub?: Subscription;
   xdtApprovalSub?: Subscription;
   usdcTransferSub?: Subscription;
+  wethApprovalSub?: Subscription;
   xdtTransferSub?: Subscription;
   mintSub?: Subscription;
   redeemSub?: Subscription;
   accountSub?: Subscription;
+  env: Config
+  selectedCollateral?: CollateralToken
 
   constructor(
     private wallet: WalletProviderService,
@@ -44,16 +48,42 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    this.env = environment;
+    this.selectedCollateral = environment.collateral[0]
     this.registerForEvents();
   }
 
   async ngOnDestroy() {
     this.usdcApprovalSub?.unsubscribe();
     this.xdtApprovalSub?.unsubscribe();
+    this.wethApprovalSub?.unsubscribe();
     this.mintSub?.unsubscribe();
     this.redeemSub?.unsubscribe();
   }
 
+  private async checkXdtAllowance() {
+    if (!this.account) {
+      return;
+    }
+    const allowance = await this.controllerService.allowance(
+      environment.xdt,
+      this.account,
+      environment.controller
+    );
+    this.isXdtApproved = allowance.gt(0)
+  }
+
+  private async checkCollateralAllowance() {
+    if (!this.account) {
+      return;
+    }
+    const allowance = await this.controllerService.allowance(
+      this.selectedCollateral.address,
+      this.account,
+      environment.controller
+    );
+    this.isCollateralApproved = allowance.gt(0)
+  }
   onSegmentChanged(event) {
     this.currentSegment = event.target.value;
   }
@@ -66,6 +96,16 @@ export class Tab1Page implements OnInit, OnDestroy {
   async approveXdt() {
     const bigAmount = ethers.utils.parseEther('1000000000');
     await this.controllerService.approveXdt(environment.controller, bigAmount);
+  }
+
+  async approve() {
+    if (!this.selectedCollateral || !this.selectedCollateral.address) {
+      this.alertService.showMessageAlert("Error", "Invalid collateral");
+      return;
+    }
+    const bigAmount = ethers.utils.parseEther('1000000000');
+    const tokenAddress = this.selectedCollateral.address;
+    await this.controllerService.approveToken(tokenAddress, environment.controller, bigAmount)
   }
 
   async connect() {
@@ -83,10 +123,14 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   async mint() {
+    if (!this.selectedCollateral) {
+      this.alertService.showOkayAlert("Error", "Invalid collateral");
+      return;
+    }
     try {
       const amount = this.usdcInput.value.toString() || '';
-      const amountBn = ethers.utils.parseUnits(amount, 6);
-      const tx = await this.controllerService.mint(environment.ethMarket, environment.usdc, amountBn);
+      const amountBn = ethers.utils.parseUnits(amount, this.selectedCollateral.decimals);
+      const tx = await this.controllerService.mint(environment.ethMarket, this.selectedCollateral.address, amountBn);
       console.log('mint tx = ', tx);
       if (tx && tx.hash) {
         this.alertService.showTransactionAlert(tx.hash);
@@ -97,18 +141,38 @@ export class Tab1Page implements OnInit, OnDestroy {
     }
   }
 
-  addUsdc() {
-
+  async addCollateral() {
+    if (!this.selectedCollateral) {
+      return;
+    }
+    try {
+      await this.wallet.addToken(
+        this.selectedCollateral.address, 
+        this.selectedCollateral.symbol, 
+        this.selectedCollateral.decimals
+      );
+    } catch (error) {
+      this.alertService.showErrorAlert(error);
+    }
   }
 
-  addXDT() {
+  async addXDT() {
+    try {
+      await this.wallet.addToken(environment.xdt, "XDT", 18)
+    } catch (error) {
+      this.alertService.showErrorAlert(error)
+    }
   }
 
   async redeem() {
+    if (!this.selectedCollateral) {
+      this.alertService.showOkayAlert("Error", "Invalid collateral");
+      return;
+    }
     try {
       const amount = this.xdtInput.value.toString() || '';
-      const amountBn = ethers.utils.parseUnits(amount, 6);
-      const tx = await this.controllerService.redeem(environment.ethMarket, environment.usdc, amountBn);
+      const amountBn = ethers.utils.parseUnits(amount, this.selectedCollateral.decimals);
+      const tx = await this.controllerService.redeem(environment.ethMarket, this.selectedCollateral.address, amountBn);
       console.log('redeem tx = ', tx);
       if (tx && tx.hash) {
         this.alertService.showTransactionAlert(tx.hash);
@@ -119,17 +183,53 @@ export class Tab1Page implements OnInit, OnDestroy {
     }
   }
 
+  async onCollateralSelected($event) {
+    const newValue = $event.target.value;
+    this.changeCollateral(newValue);
+  }
+
+  private async changeCollateral(symbol: string) {
+    let found = false
+    for (const c of environment.collateral) {
+      if (c.symbol === symbol) {
+        this.selectedCollateral = c;
+        found = true
+        console.log('collateral selected: ', c);
+        break
+      }
+    }
+    if (found) {
+      if (this.account) {
+        this.checkCollateralAllowance()
+      }
+    } else {
+      this.alertService.showToast('Invalid collateral')
+    }
+  }
+
   async registerForEvents() {
     this.usdcApprovalSub = this.controllerService.usdcApprovalSubject.subscribe(res => {
       console.log('got usdc approval', res);
-      if (res) {
-        this.isUsdcApproved = true;
+      if (res.toLocaleLowerCase() == this.account.toLowerCase() && 
+        this.selectedCollateral.address === environment.usdc) {
+        this.isCollateralApproved = true;
       }
     });
     this.xdtApprovalSub = this.controllerService.xdtApprovalSubject.subscribe(res => {
       console.log('got xdt approval', res);
-      this.isXdtApproved = true;
+      if (res.toLocaleLowerCase() == this.account.toLowerCase()) {
+        this.isXdtApproved = true;
+      }
     });
+    this.wethApprovalSub = this.controllerService.wethApprovalSubject.subscribe(res => {
+      console.log('got weth approval: ', res);
+      if (res && this.account && 
+        res.toLocaleLowerCase() == this.account.toLowerCase() && 
+        this.selectedCollateral.address === environment.weth) {
+        this.isCollateralApproved = true;
+      }
+    });
+    
     this.usdcTransferSub = this.controllerService.usdcTransferSubject.subscribe(res => {
       console.log('got usdc: ', res);
     });
@@ -145,6 +245,10 @@ export class Tab1Page implements OnInit, OnDestroy {
     this.accountSub = this.wallet.accountSubject.subscribe(account => {
       this.zone.run(async () => {
         this.account = account;
+        if (account) {
+          await this.checkXdtAllowance()
+          await this.checkCollateralAllowance()
+        }
       });
     });
   }

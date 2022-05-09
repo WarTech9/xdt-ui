@@ -17,6 +17,7 @@
     <ion-icon name="warning"></ion-icon>
     Please switch to the Optimistic Kovan
   </ion-text>
-  <ion-button size="small" color="warning" class="switch-button" (click)="switchNetwork()">Switch Network</ion-button>
+  <ion-button *ngIf="account" size="small" color="warning" class="switch-button" (click)="switchNetwork()">Switch Network</ion-button>
+  <ion-button *ngIf="!account" size="small" color="warning" class="switch-button" (click)="connect()">Connect</ion-button>
 </ion-toolbar>
 

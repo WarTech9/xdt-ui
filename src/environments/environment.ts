@@ -8,6 +8,7 @@ export const environment = {
   jsonRpcUrl: '',
   usdc: '',
   xdt: '',
+  weth: '',
   ethMarket: '',
   controller: '',
   txUrlPrefix: '',
@@ -23,8 +24,9 @@ export const environment = {
         decimals: 18
     },
     rpcUrls: [],
-    blockExplorerUrls: []
+    blockExplorerUrls: [],
   },
+  collateral: [],
 };
 
 

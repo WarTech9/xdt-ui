@@ -123,7 +123,6 @@ export class WalletProviderService {
       }
     }
     this.signer = this.provider.getSigner();
-    console.log('signer is now ', this.signer);
     return accounts;
   }
 
@@ -196,7 +195,6 @@ export class WalletProviderService {
     const eth: any = window.ethereum;
     if (eth) {
       const hexVersion = this.getHexString(eth.networkVersion);
-      console.log('current network version is: ', hexVersion);
       this.handledChainChanged(hexVersion);
     } else {
       console.log('no ethereum');

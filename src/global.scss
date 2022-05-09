@@ -51,3 +51,15 @@
 a {
   color: var(--ion-color-light-contrast);
 }
+
+.vertical-center {
+  display: flex;
+  align-items: center;
+}
+
+ion-item-divider {
+  margin-top: 16px;
+  margin-bottom: 10px;
+  min-height: 1px !important;
+  max-height: 1px !important;
+}
