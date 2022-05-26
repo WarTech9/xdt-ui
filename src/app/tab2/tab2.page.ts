@@ -21,6 +21,7 @@ export class Tab2Page implements OnInit {
   positionValue = '0';
   usdcBacked = '0';
   wethBacked = '0';
+  accountValue = '0'
 
   mintedPerUsdc = '0';
   mintedPerWeth = '0'
@@ -65,6 +66,9 @@ export class Tab2Page implements OnInit {
 
     this.redeemableWeth = ethers.utils.formatUnits(
       await this.controllerService.redeemable(environment.weth)
+    )
+    this.accountValue = ethers.utils.formatEther(
+      await this.accountProxy.getAccountValue()
     )
   }
 

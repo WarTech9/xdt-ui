@@ -28,4 +28,8 @@ export class AccountProxyService {
   async getOpenNotional() {
     return await this.accountContract.getTotalOpenNotional(environment.interactor, environment.ethMarket);
   }
+
+  async getAccountValue() {
+    return await this.accountContract.getAccountValue(environment.interactor);
+  }
 }
