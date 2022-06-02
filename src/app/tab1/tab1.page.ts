@@ -1,12 +1,12 @@
-import { Component, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ControllerService } from '../services/controller.service';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { WalletProviderService } from '../services/wallet-provider.service';
 import { environment } from 'src/environments/environment';
-import { BigNumber, ethers } from 'ethers';
 import { IonInput } from '@ionic/angular';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { GlobalAlertService } from '../services/global-alert.service';
 import { CollateralToken, Config } from '../services/config';
+import { UxdClientService } from '../services/uxd-client.service';
+import { ethers } from 'ethers';
 
 @Component({
   selector: 'app-tab1',
@@ -20,7 +20,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   @ViewChild('xdtInput') xdtInput: IonInput;
   @ViewChild('usdcOutput') usdcOutput: IonInput;
   currentSegment = 'mint';
-  assetSymbol = 'XDT';
+  assetSymbol = 'UXD';
   isApproved = false;
   isCollateralApproved = false;
   isXdtApproved = false;
@@ -28,9 +28,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   account: any;
 
   // subjects
-  usdcApprovalSub?: Subscription;
   xdtApprovalSub?: Subscription;
-  usdcTransferSub?: Subscription;
   wethApprovalSub?: Subscription;
   xdtTransferSub?: Subscription;
   mintSub?: Subscription;
@@ -41,7 +39,7 @@ export class Tab1Page implements OnInit, OnDestroy {
 
   constructor(
     private wallet: WalletProviderService,
-    private controllerService: ControllerService,
+    private uxdClient: UxdClientService,
     private alertService: GlobalAlertService,
     private zone: NgZone,
   ) {
@@ -54,19 +52,18 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   async ngOnDestroy() {
-    this.usdcApprovalSub?.unsubscribe();
     this.xdtApprovalSub?.unsubscribe();
     this.wethApprovalSub?.unsubscribe();
     this.mintSub?.unsubscribe();
     this.redeemSub?.unsubscribe();
   }
 
-  private async checkXdtAllowance() {
+  private async checkUXDAllowance() {
     if (!this.account) {
       return;
     }
-    const allowance = await this.controllerService.allowance(
-      environment.xdt,
+    const allowance = await this.uxdClient.allowance(
+      environment.uxd,
       this.account,
       environment.controller
     );
@@ -77,7 +74,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     if (!this.account) {
       return;
     }
-    const allowance = await this.controllerService.allowance(
+    const allowance = await this.uxdClient.allowance(
       this.selectedCollateral.address,
       this.account,
       environment.controller
@@ -90,12 +87,12 @@ export class Tab1Page implements OnInit, OnDestroy {
 
   async approveUsdc() {
     const bigAmount = ethers.utils.parseEther('1000000000');
-    await this.controllerService.approveUsdc(environment.controller, bigAmount);
+    await this.uxdClient.approve(environment.weth, environment.controller, bigAmount)
   }
 
-  async approveXdt() {
+  async approveUXD() {
     const bigAmount = ethers.utils.parseEther('1000000000');
-    await this.controllerService.approveXdt(environment.controller, bigAmount);
+    await this.uxdClient.approve(environment.uxd, environment.controller, bigAmount)
   }
 
   async approve() {
@@ -105,7 +102,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     }
     const bigAmount = ethers.utils.parseEther('1000000000');
     const tokenAddress = this.selectedCollateral.address;
-    await this.controllerService.approveToken(tokenAddress, environment.controller, bigAmount)
+    await this.uxdClient.approve(tokenAddress, environment.controller, bigAmount)
   }
 
   async connect() {
@@ -130,7 +127,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     try {
       const amount = this.usdcInput.value.toString() || '';
       const amountBn = ethers.utils.parseUnits(amount, this.selectedCollateral.decimals);
-      const tx = await this.controllerService.mint(environment.ethMarket, this.selectedCollateral.address, amountBn);
+      const tx = await this.uxdClient.mint(amountBn);
       console.log('mint tx = ', tx);
       if (tx && tx.hash) {
         this.alertService.showTransactionAlert(tx.hash);
@@ -158,7 +155,7 @@ export class Tab1Page implements OnInit, OnDestroy {
 
   async addXDT() {
     try {
-      await this.wallet.addToken(environment.xdt, "XDT", 18)
+      await this.wallet.addToken(environment.uxd, "UXD", 18)
     } catch (error) {
       this.alertService.showErrorAlert(error)
     }
@@ -172,7 +169,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     try {
       const amount = this.xdtInput.value.toString() || '';
       const amountBn = ethers.utils.parseUnits(amount, this.selectedCollateral.decimals);
-      const tx = await this.controllerService.redeem(environment.ethMarket, this.selectedCollateral.address, amountBn);
+      const tx = await this.uxdClient.redeem(amountBn);
       console.log('redeem tx = ', tx);
       if (tx && tx.hash) {
         this.alertService.showTransactionAlert(tx.hash);
@@ -208,20 +205,13 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   async registerForEvents() {
-    this.usdcApprovalSub = this.controllerService.usdcApprovalSubject.subscribe(res => {
-      console.log('got usdc approval', res);
-      if (res.toLocaleLowerCase() == this.account.toLowerCase() && 
-        this.selectedCollateral.address === environment.usdc) {
-        this.isCollateralApproved = true;
-      }
-    });
-    this.xdtApprovalSub = this.controllerService.xdtApprovalSubject.subscribe(res => {
-      console.log('got xdt approval', res);
+    this.xdtApprovalSub = this.uxdClient.uxdApprovalSubject.subscribe(res => {
+      console.log('got uxd approval', res);
       if (res.toLocaleLowerCase() == this.account.toLowerCase()) {
         this.isXdtApproved = true;
       }
     });
-    this.wethApprovalSub = this.controllerService.wethApprovalSubject.subscribe(res => {
+    this.wethApprovalSub = this.uxdClient.wethApprovalSubject.subscribe(res => {
       console.log('got weth approval: ', res);
       if (res && this.account && 
         res.toLocaleLowerCase() == this.account.toLowerCase() && 
@@ -230,23 +220,20 @@ export class Tab1Page implements OnInit, OnDestroy {
       }
     });
     
-    this.usdcTransferSub = this.controllerService.usdcTransferSubject.subscribe(res => {
-      console.log('got usdc: ', res);
+    this.xdtTransferSub = this.uxdClient.uxdTransferSubject.subscribe(res => {
+      console.log('got uxd: ', res);
     });
-    this.xdtTransferSub = this.controllerService.xdtTransferSubject.subscribe(res => {
-      console.log('got xdt: ', res);
-    });
-    this.mintSub = this.controllerService.mintSubject.subscribe(res => {
+    this.mintSub = this.uxdClient.mintSubject.subscribe(res => {
       console.log('got mint: ', res);
     });
-    this.redeemSub = this.controllerService.redeemSubject.subscribe(res => {
+    this.redeemSub = this.uxdClient.redeemSubject.subscribe(res => {
       console.log('got redeem: ', res);
     });
     this.accountSub = this.wallet.accountSubject.subscribe(account => {
       this.zone.run(async () => {
         this.account = account;
         if (account) {
-          await this.checkXdtAllowance()
+          await this.checkUXDAllowance()
           await this.checkCollateralAllowance()
         }
       });

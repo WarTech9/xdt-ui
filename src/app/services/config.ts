@@ -3,7 +3,7 @@ export interface Config {
     jsonRpcUrl: string;
     usdc: string;
     weth: string;
-    xdt: string;
+    uxd: string;
     ethMarket: string;
     txUrlPrefix: string;
     faucet: string;

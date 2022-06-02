@@ -7,7 +7,7 @@ export const environment = {
   chainId: '',
   jsonRpcUrl: '',
   usdc: '',
-  xdt: '',
+  uxd: '',
   weth: '',
   ethMarket: '',
   controller: '',

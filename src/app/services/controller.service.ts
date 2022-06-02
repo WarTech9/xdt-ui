@@ -44,7 +44,7 @@ export class ControllerService {
         this.provider.provider
     );
     this.xdtContract = new ethers.Contract(
-        environment.xdt,
+        environment.uxd,
         ERC20.abi,
         this.provider.provider
     );
@@ -72,7 +72,7 @@ export class ControllerService {
     return await this.usdcContract.connect(this.wallet.signer).approve(spender, amount);
   }
 
-  async approveXdt(spender: string, amount: BigNumber) {
+  async approveUXD(spender: string, amount: BigNumber) {
     return await this.xdtContract.connect(this.wallet.signer).approve(spender, amount);
   }
 

@@ -37,7 +37,7 @@
                 </ion-row>
                 <ion-row>
                   <ion-col class="align-items-center">
-                    <ion-text>TO XDT</ion-text>
+                    <ion-text>TO UXD</ion-text>
                     <ion-icon class="add-btn" name="add" (click)="addXDT()"></ion-icon>
                   </ion-col>
                 </ion-row>
@@ -49,7 +49,7 @@
                 <ion-row class="button-row">
                   <ion-col>
                     <ion-button *ngIf="!account" color="success" expand="block" fill="outline" (click)="connect()">Connect</ion-button>
-                    <ion-button *ngIf="account && !isCollateralApproved" color="success" fill="outline" expand="block" (click)="approve()">Approve {{selectedCollateral.symbol}}</ion-button>
+                    <ion-button *ngIf="account && selectedCollateral && !isCollateralApproved" color="success" fill="outline" expand="block" (click)="approve()">Approve {{selectedCollateral.symbol}}</ion-button>
                     <ion-button *ngIf="account && isCollateralApproved" color="success" fill="solid" expand="block" (click)="mint()">Mint</ion-button>
                   </ion-col>
                 </ion-row>
@@ -62,7 +62,7 @@
                 </ion-row>
                 <ion-row>
                   <ion-col class="">
-                    <ion-text>FROM XDT</ion-text>
+                    <ion-text>FROM UXD</ion-text>
                     <ion-icon class="add-btn" name="add" (click)="addXDT()"></ion-icon>
                   </ion-col>
                 </ion-row>
@@ -90,7 +90,7 @@
                 <ion-row class="button-row">
                   <ion-col>
                     <ion-button *ngIf="!account" color="success" expand="block" fill="outline" (click)="connect()">Connect</ion-button>
-                    <ion-button *ngIf="account && !isXdtApproved" color="success" fill="outline" expand="block" (click)="approveXdt()">Approve XDT</ion-button>
+                    <ion-button *ngIf="account && !isXdtApproved" color="success" fill="outline" expand="block" (click)="approveUXD()">Approve UXD</ion-button>
                     <ion-button *ngIf="account && isXdtApproved" color="success" fill="solid" expand="block" (click)="redeem()">Redeem</ion-button>
                   </ion-col>
                 </ion-row>

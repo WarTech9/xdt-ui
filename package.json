@@ -30,6 +30,7 @@
     "moment": "^2.29.3",
     "rxjs": "~6.6.0",
     "tslib": "^2.2.0",
+    "uxd-evm-client": "github:UXDProtocol/uxd-evm-client",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
