@@ -14,7 +14,6 @@ export class WalletProviderService {
   provider: any
   ethereum;
   signer: Signer;
-
   currentAccount;
   currentNetwork: NetworkParams;
   currentConfig: Config;
