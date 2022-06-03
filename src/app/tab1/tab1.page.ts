@@ -49,6 +49,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     this.env = environment;
     this.selectedCollateral = environment.collateral[0]
     this.registerForEvents();
+    this.logTotalSupply()
   }
 
   async ngOnDestroy() {
@@ -125,10 +126,11 @@ export class Tab1Page implements OnInit, OnDestroy {
       return;
     }
     try {
+      const provider = await this.wallet.provider
       const amount = this.usdcInput.value.toString() || '';
       const amountBn = ethers.utils.parseUnits(amount, this.selectedCollateral.decimals);
-      const tx = await this.uxdClient.mint(amountBn);
-      console.log('mint tx = ', tx);
+      const tx = await this.uxdClient.mint(amountBn)
+      console.log('mint  tx = ', tx);
       if (tx && tx.hash) {
         this.alertService.showTransactionAlert(tx.hash);
       }
@@ -202,6 +204,11 @@ export class Tab1Page implements OnInit, OnDestroy {
     } else {
       this.alertService.showToast('Invalid collateral')
     }
+  }
+
+  private async logTotalSupply() {
+    const totalSupply = await this.uxdClient.uxdTotalSupply()
+    console.log("totalSupply = ", ethers.utils.formatEther(totalSupply));
   }
 
   async registerForEvents() {

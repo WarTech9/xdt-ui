@@ -11,7 +11,7 @@ import { GlobalAlertService } from './global-alert.service';
   providedIn: 'root'
 })
 export class WalletProviderService {
-  provider: any;
+  provider: any
   ethereum;
   signer: Signer;
 
@@ -24,7 +24,7 @@ export class WalletProviderService {
   networkSubject: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor(
-    private globalAlert: GlobalAlertService
+    private globalAlert: GlobalAlertService,
   ) {
     this.initializeNetworkConnection();
   }
@@ -33,9 +33,11 @@ export class WalletProviderService {
     try {
       const ethereum = await detectEthereumProvider();
       if (ethereum) {
+        console.log('starting app with ethereum: ', ethereum)
         await this.startApp(ethereum);
         return ethereum !== undefined;
       } else {
+        console.log('*** No ethereum')
         return false;
       }
     } catch (error) {
@@ -51,6 +53,7 @@ export class WalletProviderService {
   async startApp(ethereum: any) {
     this.provider = new ethers.providers.Web3Provider(ethereum, 'any');
     this.signer = await this.provider.getSigner();
+    console.log("***signer in startApp is ", this.signer)
     this.registerHandlers();
     if (ethereum.selectedAddress) {
       ethereum.enable();
@@ -110,7 +113,6 @@ export class WalletProviderService {
       return;
     }
 
-    console.log('getting accounts');
     let accounts = await this.provider.send('eth_requestAccounts', []);
     if (accounts.length > 0) {
       this.setCurrentAccount(accounts[0]);

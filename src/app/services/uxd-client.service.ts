@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, ethers, Signer } from 'ethers';
 import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UXDController } from 'uxd-evm-client';
@@ -22,7 +22,7 @@ export class UxdClientService {
 
   constructor(
     private providerService: DefaultProviderService,
-    private wallet: WalletProviderService
+    private wallet: WalletProviderService 
   ) { 
     this.initializeClient()
   }
@@ -39,7 +39,7 @@ export class UxdClientService {
   async mint(amount: BigNumber) {
     return await this.controller.mint(
       environment.ethMarket, 
-      environment.weth, 
+      environment.weth,
       amount,
       BigNumber.from(0),
       this.wallet.signer
@@ -54,6 +54,10 @@ export class UxdClientService {
       BigNumber.from(0),
       this.wallet.signer
     )
+  }
+
+  async uxdTotalSupply() {
+    return await this.controller.uxdTotalSupply()
   }
 
   async allowance(contract: string, account: string, spender: string): Promise<BigNumber> {
