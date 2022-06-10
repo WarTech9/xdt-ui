@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { GlobalAlertService } from '../services/global-alert.service';
 import { CollateralToken, Config } from '../services/config';
 import { UxdClientService } from '../services/uxd-client.service';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 
 @Component({
   selector: 'app-tab1',
@@ -75,6 +75,10 @@ export class Tab1Page implements OnInit, OnDestroy {
     if (!this.account) {
       return;
     }
+    if (this.selectedCollateral.symbol == "ETH") {
+      this.isCollateralApproved = true
+      return
+    }
     const allowance = await this.uxdClient.allowance(
       this.selectedCollateral.address,
       this.account,
@@ -125,11 +129,17 @@ export class Tab1Page implements OnInit, OnDestroy {
       this.alertService.showOkayAlert("Error", "Invalid collateral");
       return;
     }
+    // check balance
     try {
       const provider = await this.wallet.provider
       const amount = this.usdcInput.value.toString() || '';
       const amountBn = ethers.utils.parseUnits(amount, this.selectedCollateral.decimals);
-      const tx = await this.uxdClient.mint(amountBn)
+      let tx
+      if (this.selectedCollateral.symbol == 'ETH') {
+        tx = await this.uxdClient.mintWithEth(amountBn);
+      } else {
+        tx = await this.uxdClient.mint(amountBn);
+      }
       console.log('mint  tx = ', tx);
       if (tx && tx.hash) {
         this.alertService.showTransactionAlert(tx.hash);
@@ -168,10 +178,16 @@ export class Tab1Page implements OnInit, OnDestroy {
       this.alertService.showOkayAlert("Error", "Invalid collateral");
       return;
     }
+    // check balance
     try {
       const amount = this.xdtInput.value.toString() || '';
       const amountBn = ethers.utils.parseUnits(amount, this.selectedCollateral.decimals);
-      const tx = await this.uxdClient.redeem(amountBn);
+      let tx;
+      if (this.selectedCollateral.symbol == 'ETH') {
+        tx = await this.uxdClient.redeemEth(amountBn);
+      } else {
+        tx = await this.uxdClient.redeem(amountBn);
+      }
       console.log('redeem tx = ', tx);
       if (tx && tx.hash) {
         this.alertService.showTransactionAlert(tx.hash);
@@ -204,6 +220,11 @@ export class Tab1Page implements OnInit, OnDestroy {
     } else {
       this.alertService.showToast('Invalid collateral')
     }
+  }
+
+  private async checkWethBalanceGreaterThan(amount: BigNumber) {
+    const wethBalance = await this.uxdClient.tokenBalance(environment.weth, this.wallet.currentAccount)
+    return wethBalance.gt(amount)
   }
 
   private async logTotalSupply() {

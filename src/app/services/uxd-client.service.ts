@@ -36,21 +36,40 @@ export class UxdClientService {
     this.registerEvents()
   }
 
-  async mint(amount: BigNumber) {
+  async mint(wethAmount: BigNumber) {
+    console.log('calling mint')
     return await this.controller.mint(
       environment.ethMarket, 
       environment.weth,
-      amount,
+      wethAmount,
       BigNumber.from(0),
       this.wallet.signer
     )
   }
 
-  async redeem(amount: BigNumber) {
+  async mintWithEth(ethAmount: BigNumber) {
+    return await this.controller.mintWithEth(
+      environment.ethMarket,
+      ethAmount,
+      BigNumber.from(0),
+      this.wallet.signer, 
+    )
+  }
+
+  async redeem(uxdAmount: BigNumber) {
     return await this.controller.redeem(
       environment.ethMarket,
       environment.weth,
-      amount,
+      uxdAmount,
+      BigNumber.from(0),
+      this.wallet.signer
+    )
+  }
+
+  async redeemEth(uxdAmount: BigNumber) {
+    return await this.controller.redeemEth(
+      environment.ethMarket,
+      uxdAmount,
       BigNumber.from(0),
       this.wallet.signer
     )
@@ -58,6 +77,10 @@ export class UxdClientService {
 
   async uxdTotalSupply() {
     return await this.controller.uxdTotalSupply()
+  }
+
+  async tokenBalance(contractAddress: string, account: string): Promise<BigNumber> {
+    return await this.controller.tokenBalance(contractAddress, account)
   }
 
   async allowance(contract: string, account: string, spender: string): Promise<BigNumber> {
