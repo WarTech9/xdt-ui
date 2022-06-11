@@ -23,8 +23,7 @@
               </ion-row>
               <ion-row>
                 <ion-col>My Balance</ion-col>
-                <ion-col *ngIf="accountBalance !== '-'">{{accountBalance | number:'1.2-4'}} UXD</ion-col>
-                <ion-col *ngIf="accountBalance === '-'">{{0 | number:'1.2-4'}}</ion-col>
+                <ion-col>{{accountBalance | number:'1.2-4'}} UXD</ion-col>
               </ion-row>
               <ion-row>
                 <ion-col>Position Value</ion-col>
@@ -33,10 +32,6 @@
               <ion-row>
                 <ion-col>Open Notional</ion-col>
                 <ion-col> {{openNotional | number:'1.2-4'}} </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col>Account Value </ion-col>
-                <ion-col> {{accountValue | number:'1.2-4'}} </ion-col>
               </ion-row>
               <ion-item-divider class="light-background"></ion-item-divider>
               <ion-row>

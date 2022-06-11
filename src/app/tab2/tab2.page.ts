@@ -51,6 +51,14 @@ export class Tab2Page implements OnInit {
     const supply = await this.controllerService.xdtTotalSupply();
     this.totalSupply = ethers.utils.formatEther(supply);
 
+    if (this.wallet.currentAccount) {
+      this.accountBalance = ethers.utils.formatEther(
+        await this.uxdClient.tokenBalance(environment.uxd, this.wallet.currentAccount)
+      )
+    } else {
+      this.accountBalance = '0'
+    }
+
     const value = await this.accountProxy.getPositionValue();
     this.positionValue = ethers.utils.formatEther(value);
 
@@ -63,17 +71,11 @@ export class Tab2Page implements OnInit {
     this.redeemableWeth = ethers.utils.formatUnits(
       await this.controllerService.redeemable(environment.weth)
     )
-    this.accountValue = ethers.utils.formatEther(
-      await this.accountProxy.getAccountValue()
-    )
+    // this.accountValue = ethers.utils.formatEther(
+    //   await this.accountProxy.getAccountValue()
+    // )
 
-    if (this.wallet.currentAccount) {
-      this.accountBalance = ethers.utils.formatEther(
-        await this.uxdClient.tokenBalance(environment.uxd, this.wallet.currentAccount)
-      )
-    } else {
-      this.accountBalance = '-'
-    }
+
   }
 
   async getMintedPerCollateral() {
