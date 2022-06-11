@@ -8,7 +8,7 @@ export const environment = {
   controller: '0x3a1e707D5980DFCEF29c4c4e4d3401bE34A4Db23',
   accountProxy: '0x4677D9631699b53000aEb7C75b45DCaF5260a64a',
   faucet: 'https://kovan.optifaucet.com/',
-  interactor: '0x354f5a03eD10fFdef939A651d9129E22215B0353',
+  depository: '0x354f5a03eD10fFdef939A651d9129E22215B0353',
   txUrlPrefix: '',
   networkParams: {
     chainId: '',

@@ -22,14 +22,14 @@ export class AccountProxyService {
   }
 
   async getPositionValue() {
-    return await this.accountContract.getTotalPositionValue(environment.interactor, environment.ethMarket);
+    return await this.accountContract.getTotalPositionValue(environment.depository, environment.ethMarket);
   }
 
   async getOpenNotional() {
-    return await this.accountContract.getTotalOpenNotional(environment.interactor, environment.ethMarket);
+    return await this.accountContract.getTotalOpenNotional(environment.depository, environment.ethMarket);
   }
 
   async getAccountValue() {
-    return await this.accountContract.getAccountValue(environment.interactor);
+    return await this.accountContract.getAccountValue(environment.depository);
   }
 }

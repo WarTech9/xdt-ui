@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { UXDController } from 'uxd-evm-client';
 import { DefaultProviderService } from './default-provider.service';
 import { WalletProviderService } from './wallet-provider.service';
+import ERC20 from '../../artifacts/ERC20.json';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class UxdClientService {
   wethApprovalSubject: Subject<any> = new Subject<any>();
   wethTransferSubject: Subject<any> = new Subject<any>();
   uxdTransferSubject: Subject<any> = new Subject<any>();
+  wethContract: any
 
   constructor(
     private providerService: DefaultProviderService,
@@ -33,6 +35,11 @@ export class UxdClientService {
       environment.controller,
       environment.uxd
     )
+    this.wethContract = new ethers.Contract(
+      environment.weth,
+      ERC20.abi,
+      this.providerService.provider
+    );
     this.registerEvents()
   }
 
@@ -108,6 +115,13 @@ export class UxdClientService {
     })
     this.controller.uxdTransferSubject.subscribe(t => {
       this.uxdTransferSubject.next(t)
+    })
+    this.wethContract.on('Approval', async (account, spender, amount) => {
+      this.wethApprovalSubject.next({
+        account,
+        spender,
+        amount
+      });
     })
   }
 }

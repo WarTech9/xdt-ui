@@ -14,7 +14,7 @@ export const environment = {
   txUrlPrefix: '',
   faucet: '',
   accountProxy: '',
-  interactor: '',
+  depository: '',
   networkParams: {
     chainId: '',
     chainName: '',

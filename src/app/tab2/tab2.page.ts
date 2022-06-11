@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AccountProxyService } from '../services/account-proxy.service';
 import { CollateralInfo, ControllerService } from '../services/controller.service';
+import { UxdClientService } from '../services/uxd-client.service';
+import { WalletProviderService } from '../services/wallet-provider.service';
 
 interface CollateralMap {
   symbol: string
@@ -22,10 +24,9 @@ export class Tab2Page implements OnInit {
   usdcBacked = '0';
   wethBacked = '0';
   accountValue = '0'
+  accountBalance = '0'
 
-  mintedPerUsdc = '0';
   mintedPerWeth = '0'
-  redeemableUsdc = '0'
   redeemableWeth = '0'
 
   minted: CollateralMap[] = []
@@ -36,6 +37,8 @@ export class Tab2Page implements OnInit {
 
   constructor(
     private accountProxy: AccountProxyService,
+    private wallet: WalletProviderService,
+    private uxdClient: UxdClientService,
     private controllerService: ControllerService,
   ) {}
 
@@ -54,15 +57,8 @@ export class Tab2Page implements OnInit {
     const notional = await this.accountProxy.getOpenNotional();
     this.openNotional = ethers.utils.formatEther(notional);
 
-    this.mintedPerUsdc = ethers.utils.formatEther(
-      await this.controllerService.mintedPerCollateral(environment.usdc))
-
     this.mintedPerWeth = ethers.utils.formatEther(
       await this.controllerService.mintedPerCollateral(environment.weth))
-
-    this.redeemableUsdc = ethers.utils.formatUnits(
-      await this.controllerService.redeemable(environment.usdc), '6'
-    )
 
     this.redeemableWeth = ethers.utils.formatUnits(
       await this.controllerService.redeemable(environment.weth)
@@ -70,6 +66,14 @@ export class Tab2Page implements OnInit {
     this.accountValue = ethers.utils.formatEther(
       await this.accountProxy.getAccountValue()
     )
+
+    if (this.wallet.currentAccount) {
+      this.accountBalance = ethers.utils.formatEther(
+        await this.uxdClient.tokenBalance(environment.uxd, this.wallet.currentAccount)
+      )
+    } else {
+      this.accountBalance = '-'
+    }
   }
 
   async getMintedPerCollateral() {
@@ -110,5 +114,8 @@ export class Tab2Page implements OnInit {
       console.log('got redeem: ', res);
       await this.refresh();
     });
+    this.wallet.accountSubject.subscribe(async account => {
+      await this.refresh();
+    })
   }
 }

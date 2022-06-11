@@ -158,18 +158,24 @@ export class GlobalAlertService {
   async showToast(message: string, timeout: number = 3000) {
     const toast = await this.toastController.create({
       message,
-      duration: timeout
+      duration: timeout,
+      position: 'top'
     });
     await toast.present();
   }
 
   async connect() {
-    const isConected = await this.provider.connect();
-    console.log('connect clicked with result: ', isConected);
-    if (isConected) {
-      this.provider.getAccounts();
-    } else {
-      this.presentNoConnectionAlert();
+    try {
+      const isConected = await this.provider.connect();
+      if (isConected) {
+        this.provider.getAccounts();
+      } else {
+        this.presentNoConnectionAlert();
+      }
+    } catch (error) {
+      this.showErrorAlert(error);
+      console.error('error connecting', error);
+    console.log('provider = ', this.provider)
     }
   }
 
